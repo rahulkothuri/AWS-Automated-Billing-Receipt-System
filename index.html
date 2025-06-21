@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 1rem;
+        }
+        input[type="file"] {
+            margin-bottom: 1rem;
+        }
+        button {
+            padding: 0.5rem 1.5rem;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #aaa;
+        }
+        .message {
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload PDF Receipt</h2>
+        <input type="file" id="pdfInput" accept="application/pdf" />
+        <br />
+        <button id="uploadBtn" disabled>Upload</button>
+        <div class="message" id="message"></div>
+    </div>
+    <script>
+        const pdfInput = document.getElementById('pdfInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const message = document.getElementById('message');
+        let selectedFile = null;
+
+        pdfInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0 && e.target.files[0].type === 'application/pdf') {
+                selectedFile = e.target.files[0];
+                uploadBtn.disabled = false;
+                message.textContent = '';
+            } else {
+                selectedFile = null;
+                uploadBtn.disabled = true;
+                message.textContent = 'Please select a valid PDF file.';
+            }
+        });
+
+        uploadBtn.addEventListener('click', function() {
+            if (!selectedFile) return;
+            uploadBtn.disabled = true;
+            message.textContent = 'Uploading...';
+            const formData = new FormData();
+            formData.append('receipt', selectedFile);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    message.textContent = 'Upload successful!';
+                } else {
+                    message.textContent = 'Upload failed: ' + (data.error || 'Unknown error');
+                }
+                uploadBtn.disabled = false;
+            })
+            .catch(err => {
+                message.textContent = 'Upload failed: ' + err.message;
+                uploadBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
