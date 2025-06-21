@@ -28,20 +28,7 @@ This system allows users to upload receipts through a web interface. The uploade
 ### Frontend Setup
 
 1. Clone this repository to your local machine or web server
-2. Open `config.js` and update the AWS configuration:
-   ```javascript
-   const awsConfig = {
-       region: 'your-aws-region',
-       bucketName: 'your-s3-bucket-name',
-       credentials: {
-           accessKeyId: 'your-access-key-id',
-           secretAccessKey: 'your-secret-access-key'
-       }
-   };
-   ```
-   
-   **Note**: For production, DO NOT use hardcoded credentials. Instead, use AWS Cognito or another secure authentication method.
-
+2. Create a .env file and AWS Access Keys.
 3. Deploy the frontend files to your web server or host them on AWS S3 with static website hosting enabled
 
 ### Lambda Function
